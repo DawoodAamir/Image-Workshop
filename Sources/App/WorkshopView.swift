@@ -77,7 +77,9 @@ struct WorkshopView: View {
   @State private var assistant = PromptAssistant()
   private let assets: AssetLibrary = {
     let base =
-      ProcessInfo.processInfo.environment["WORKSHOP_TEST_FOLDER"].map { URL(fileURLWithPath: $0) }
+      ProcessInfo.processInfo.environment["WORKSHOP_TEST_RUN"].flatMap(UUID.init(uuidString:)).map {
+        URL.applicationSupportDirectory.appendingPathComponent("WorkflowTests/\($0)")
+      }
       ?? URL.applicationSupportDirectory.appendingPathComponent("Image Workshop")
     return AssetLibrary(folder: base.appendingPathComponent("Assets"))
   }()
@@ -135,7 +137,7 @@ struct WorkshopView: View {
         .navigationSplitViewColumnWidth(min: 220, ideal: 260)
         .safeAreaInset(edge: .bottom) {
           Button("New project", systemImage: "plus", action: newProject).buttonStyle(
-            .borderedProminent
+            .bordered
           ).padding().frame(maxWidth: .infinity)
         }
     } detail: {

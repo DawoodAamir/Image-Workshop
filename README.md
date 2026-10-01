@@ -4,6 +4,10 @@ A native macOS 27 workspace for creating artwork with Apple Image Playground, pr
 
 [![Checks](https://github.com/DawoodAamir/Image-Workshop/actions/workflows/ci.yml/badge.svg)](https://github.com/DawoodAamir/Image-Workshop/actions/workflows/ci.yml)
 
+![Native workspace with a saved caption layout](Docs/Screenshots/workspace.png)
+
+Screenshot captured by the native workflow test using an original fixture illustration.
+
 ## What you can do
 
 - Organise artwork into named projects, collections, tags, and favourites.

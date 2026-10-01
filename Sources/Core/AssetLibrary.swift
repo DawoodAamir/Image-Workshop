@@ -42,6 +42,12 @@ public actor AssetLibrary {
     catch { try? FileManager.default.removeItem(at:url(id)); throw error }
     return StoredAsset(id:id,width:image.width,height:image.height)
   }
+  public func writeExport(_ id: UUID, recipe: ExportRecipe, jpeg: Bool, to destination: URL) throws {
+    try render(id, recipe: recipe, jpeg: jpeg).write(to: destination, options: .atomic)
+  }
+  public func writeContactSheet(_ ids: [UUID], to destination: URL) throws {
+    try contactSheet(ids).write(to: destination, options: .atomic)
+  }
   public func preview(_ id: UUID) throws -> Data { try Data(contentsOf:url(id,thumbnail:true)) }
   public func remove(_ id: UUID) { try? FileManager.default.removeItem(at:url(id)); try? FileManager.default.removeItem(at:url(id,thumbnail:true)) }
   private func encode(_ image: CGImage, jpeg: Bool) throws -> Data {
@@ -84,7 +90,7 @@ public actor AssetLibrary {
     let data = NSMutableData()
     guard let consumer = CGDataConsumer(data:data),let context = CGContext(consumer:consumer,mediaBox:nil,nil) else { throw ImageFailure.invalidImage }
     for start in stride(from:0,to:ids.count,by:9) {
-      context.beginPDFPage([kCGPDFContextMediaBox: CGRect(x:0,y:0,width:612,height:792)] as CFDictionary)
+      context.beginPDFPage(nil)
       for (offset,id) in ids[start..<min(start+9,ids.count)].enumerated() {
         let image = try decode(Data(contentsOf:url(id,thumbnail:true)),edge:512)
         let cell = CGRect(x:30+Double(offset%3)*190,y:550-Double(offset/3)*240,width:172,height:202)

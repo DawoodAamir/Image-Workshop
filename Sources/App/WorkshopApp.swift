@@ -20,6 +20,8 @@ import AppKit
       if let container { WorkshopView().modelContainer(container) }
       else { ContentUnavailableView("Library couldn’t open",systemImage:"externaldrive.badge.exclamationmark",description:Text(failure ?? "Restart the app to try again. Your saved files have not been replaced.")) }
     }.defaultSize(width:1180,height:780)
-    .commands { CommandGroup(replacing:.newItem) {} }
+    .commands { CommandGroup(replacing:.newItem) {
+      Button("New project") { NotificationCenter.default.post(name:Notification.Name("WorkshopNewProject"),object:nil) }.keyboardShortcut("n")
+    } }
   }
 }

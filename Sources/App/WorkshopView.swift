@@ -143,6 +143,7 @@ struct WorkshopView: View {
         actions: { Button("New project",action:newProject).buttonStyle(.borderedProminent) }
       }
     }
+    .onReceive(NotificationCenter.default.publisher(for:Notification.Name("WorkshopNewProject"))) { _ in newProject() }
     .onChange(of:selectedID) { _,_ in versionID = nil;loadVersion() }
     .fileImporter(isPresented:$importing,allowedContentTypes:[.png,.jpeg,.heic],allowsMultipleSelection:false) { result in
       switch result { case .success(let urls):if let url=urls.first { ingest(url,origin:"Imported") }
@@ -261,7 +262,7 @@ struct WorkshopView: View {
       guard response == .OK,let url=panel.url else { return }
       let id=version.assetID;let recipe=recipe;let library=assets
       Task { busy = true;defer { busy = false }
-        do { let data=try await library.render(id,recipe:recipe,jpeg:["jpg","jpeg"].contains(url.pathExtension.lowercased()));try data.write(to:url,options:.atomic) }
+        do { try await library.writeExport(id,recipe:recipe,jpeg:["jpg","jpeg"].contains(url.pathExtension.lowercased()),to:url) }
         catch { self.error = error.localizedDescription }
       }
     }
@@ -271,7 +272,7 @@ struct WorkshopView: View {
     let ids=versions.map(\.assetID);let library=assets
     panel.begin { response in
       guard response == .OK,let url=panel.url else { return }
-      Task { busy = true;defer { busy = false };do { let data=try await library.contactSheet(ids);try data.write(to:url,options:.atomic) } catch { self.error = error.localizedDescription } }
+      Task { busy = true;defer { busy = false };do { try await library.writeContactSheet(ids,to:url) } catch { self.error = error.localizedDescription } }
     }
   }
   private func deleteProject() {

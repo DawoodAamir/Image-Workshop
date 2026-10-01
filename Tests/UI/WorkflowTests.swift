@@ -36,20 +36,22 @@ import XCTest
     XCTAssertTrue(app.buttons["Import"].waitForExistence(timeout: 5))
     app.buttons["Import"].click()
     app.typeKey("g", modifierFlags: [.command, .shift])
-    let go = app.dialogs.textFields.firstMatch
+    let go = app.textFields["PathTextField"]
     XCTAssertTrue(go.waitForExistence(timeout: 5), app.debugDescription)
     go.click()
     go.typeText(fixture.path)
     app.typeKey(.return, modifierFlags: [])
-    let open = app.dialogs.buttons["Open"]
+    let open = app.sheets["open-panel"].buttons["OKButton"]
     XCTAssertTrue(open.waitForExistence(timeout: 5), app.debugDescription)
     open.click()
     XCTAssertTrue(app.staticTexts["720 × 480"].waitForExistence(timeout: 10), app.debugDescription)
-    let title = app.textFields["Name"]
+    let title = app.textFields["workshop-title"]
     title.click()
     title.typeKey("a", modifierFlags: .command)
     title.typeText("Coastal campaign")
-    let caption = app.textFields["Caption"]
+    app.scrollViews.containing(.textField, identifier: "workshop-caption").firstMatch.scroll(
+      byDeltaX: 0, deltaY: -400)
+    let caption = app.textFields["workshop-caption"]
     caption.click()
     caption.typeText("A quieter kind of summer")
     app.buttons["Save edits"].click()
@@ -61,7 +63,7 @@ import XCTest
     app.activate()
     app.staticTexts["Coastal campaign"].firstMatch.click()
     XCTAssertTrue(app.buttons["Remove favourite"].waitForExistence(timeout: 10))
-    XCTAssertEqual(app.textFields["Caption"].value as? String, "A quieter kind of summer")
+    XCTAssertEqual(app.textFields["workshop-caption"].value as? String, "A quieter kind of summer")
     XCTAssertTrue(app.buttons["Export"].isEnabled)
   }
 }

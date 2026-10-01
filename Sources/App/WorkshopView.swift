@@ -252,7 +252,8 @@ struct WorkshopView: View {
   private var inspectorView: some View {
     Form {
       Section("Project") {
-        TextField("Name", text: $title)
+        TextField("Name", text: $title).accessibilityLabel("Name").accessibilityIdentifier(
+          "workshop-title")
         TextField("Collection", text: $collection)
         TextField("Tags", text: $tags)
         Button(
@@ -297,7 +298,9 @@ struct WorkshopView: View {
         Picker("Longest edge", selection: $edge) {
           ForEach([1024, 2048, 4096], id: \.self) { Text("\($0) px").tag($0) }
         }
-        TextField("Caption", text: $caption, axis: .vertical).lineLimit(2...4)
+        TextField("Caption", text: $caption, axis: .vertical).lineLimit(2...4).accessibilityLabel(
+          "Caption"
+        ).accessibilityIdentifier("workshop-caption")
         Text("Crop and caption are local edits. Original images remain unchanged.").font(.caption)
           .foregroundStyle(.secondary)
         Button("Preview layout") { refreshPreview() }.disabled(version == nil)
